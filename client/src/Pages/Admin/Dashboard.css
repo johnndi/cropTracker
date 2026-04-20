@@ -1,0 +1,50 @@
+.dashboard-container {
+  display: flex;
+  width: 100%;
+}
+.sidebar-container {
+  margin:0.5rem 0.5rem;
+  height: 100vh;
+
+}
+.dashboard{
+background-color: #fcf4e1;
+    width: 60%;
+    padding: 20px;
+    margin:0.5rem 0.5rem;
+    height: 100vh;
+}
+.recent-activity{
+    background-color: #ffffff;
+    diplay: flex;
+    flex-direction: column;
+
+    width: 20%;
+    margin:0.5rem 0.5rem;
+    height: 100vh;
+}
+.field-overview{
+    background-color: #ffffff;
+    margin-top: 20px;
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.fo-header{
+    gap:0.25rem 0.25rem;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+
+.stat-cards{
+    display: flex;
+    gap: 20px;
+}
+.card{
+    background-color: #ffffff;
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
