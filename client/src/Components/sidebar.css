@@ -1,9 +1,49 @@
 .sidebar{
-    width: 20%;
+    width:100%;
     height: 100vh;
     background-color: #14401b;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 20px;
+}
+
+.navs{
+    display: flex;
+    align-items: center;
+    text-align: center;
+  flex-direction: column;
+  justify-content: space-around;
+
+   gap: 1rem;
+    list-style: none;
+    padding: 1.5rem;
+}
+.navs a{
+    text-transform: capitalize;
+    text-decoration: none;
+    color: white;
+    list-style: none;
+}
+.list{
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    gap: 2rem;
+}
+h2{
+    text-transform: capitalize;
+    color: white;
+    text-align: center;
+    padding: 0.5rem;
+    margin: 1rem;
+}
+p{
+    text-transform: capitalize;
+    text-align: center;
+}
+.navs a:hover{
+    color: orange;
+    font-weight: bold;
 }
