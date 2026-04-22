@@ -1,6 +1,7 @@
 import "./StatCard.css";
 
 const StatCard = ({ label, value, icon, iconBg }) => {
+ 
   return (
     <div className="stat-card">
       <div className="stat-content">

@@ -1,0 +1,51 @@
+.order{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 100vh;
+}
+.dash{
+   
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 250px;
+    background-color: black;
+    padding: 20px;
+    list-style: none;
+    height: 100%;
+}
+
+.addadmin{
+    width:50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+form{
+    display: flex;
+    flex-direction: column;
+
+    gap: 3rem;
+}
+.input{
+    height:2rem;
+    background-color: white;
+    border: none;
+    color:black;
+    font-family: 'Times New Roman', Times, serif;
+
+}
+label{
+    margin: auto, 1rem;
+}
+button{
+    all:unset ;
+    background-color: orange;
+    color: white;
+    width: 100%;
+    text-align: center;
+}

@@ -1,0 +1,58 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 1. User Management
+enum Role {
+  ADMIN
+  AGENT
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String   // Hashed
+  role      Role     @default(AGENT)
+  fields    Field[]  @relation("AgentFields") 
+  updates   Observation[]                   
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+enum CropStage {
+  PLANTED
+  GROWING
+  READY
+  HARVESTED
+}
+
+model Field {
+  id           String      @id @default(cuid())
+  name         String
+  cropType     String
+  plantingDate DateTime
+  currentStage CropStage   @default(PLANTED)
+  agentId      String
+  agent        User        @relation("AgentFields", fields: [agentId], references: [id])
+  observations Observation[] // History of notes/stage changes
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+model Observation {
+  id           String    @id @default(cuid())
+  notes        String?   @db.Text
+  stageAtTime  CropStage 
+  fieldId      String
+  field        Field     @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  userId       String
+  createdBy    User      @relation(fields: [userId], references: [id])
+
+  createdAt    DateTime  @default(now())
+}

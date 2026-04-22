@@ -48,3 +48,14 @@ background-color: #fcf4e1;
     padding: 18px 20px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
+.fo-cards{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+.field-card{
+    background-color: #ffffff
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}

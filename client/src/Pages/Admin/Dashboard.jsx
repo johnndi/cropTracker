@@ -3,8 +3,52 @@ import RecentActivities from "../../Components/RecentActivity";
 import StatCard from "../../Components/StatCard";
 import fieldData from "../../Components/fieldData";
 import "./Dashboard.css";
+import { useEffect, useState } from "react";
 
 const Dashboard = () => {
+  const [stats, setStats] = useState({
+    totalFields: 0,
+    atRisk: 0,
+    harvested: 0,
+    activeAgents: 0
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+    
+        const response = await fetch('http://localhost:5000/api/fields', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+        });
+        
+        if (!response.ok) throw new Error('Failed to fetch fields');
+        
+        const fields = await response.json();
+        
+        // Calculate totals
+        const totalFields = fields.length;
+        const atRisk = fields.filter(f => f.status === 'At Risk').length;
+        const harvested = fields.filter(f => f.currentStage === 'HARVESTED').length;
+        
+        // Get unique agents
+        const uniqueAgents = new Set(fields.map(f => f.agentId)).size;
+        
+        setStats({
+          totalFields,
+          atRisk,
+          harvested,
+          activeAgents: uniqueAgents
+        });
+    };
+
+    fetchStats();
+  }
+  , []);
+
+  
   return (
     <div className="dashboard-container">
       <div className="sidebar-container">
@@ -15,10 +59,10 @@ const Dashboard = () => {
         <h1>Dashboard</h1>
 
         <div className="stat-cards">
-          <StatCard label="Total Fields" value={48} />
-          <StatCard label="At Risk" value={3} />
-          <StatCard label="Harvested" value={15} />
-          <StatCard label="Active Agents" value={12} />
+          <StatCard label="Total Fields" value={stats.totalFields} />
+          <StatCard label="At Risk" value={stats.atRisk} />
+          <StatCard label="Harvested" value={stats.harvested} />
+          <StatCard label="Active Agents" value={stats.activeAgents} />
         </div>
 
         {/* Map */}

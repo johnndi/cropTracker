@@ -5,7 +5,6 @@ const Sidebar = () => {
     return (
         <div className="sidebar">
             <h2>Crop Tracker</h2>
-             <h2>Admin Dashboard</h2>
 {/* //         <p>Welcome, {user?.data?.fullName}</p> */}
          <nav className="navs">
           <ul className="list">
@@ -13,13 +12,13 @@ const Sidebar = () => {
                <Link to="/Admin">Dashboard</Link>
              </li>
              <li>
-               <Link to="/Admin/Addadmin">Fields</Link>
+               <Link to="/Admin/AddAgent">Agents</Link>
              </li>
              <li>
-               <Link to="/Admin/Porders">Agents</Link>
+               <Link to="/Admin/AddFields">Fields</Link>
              </li>
              <li>
-               <Link to="/Admin/Addmenu">Reports</Link>
+               <Link to="/Admin/AddReport">Reports</Link>
              </li>
              
            </ul>
