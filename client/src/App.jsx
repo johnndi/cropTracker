@@ -1,32 +1,42 @@
 
-import Dashboard from "./Pages/Admin/Dashboard"
-import {BrowserRouter, Routes, Route} from "react-router-dom"
-import AddField from "./Pages/Admin/AddField"
-import AddAgent from "./Pages/Admin/AddAgent"
-import Admin from "./Pages/Admin/Admin"
-import AgentDashboard from "./Pages/Admin/AgentDashboard"
-import Login from "./Pages/login"
-function App() {
- 
-  return (
-    <>
-    <div>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<login/>}/>
-           <Route path='/dashboard' element={<AgentDashboard/>}/>
-        <Route path= "/Admin/AddField" element={<AddField/>}/>
-        <Route path="/Admin/AddAgent" element={<AddAgent/>}/>
-      
-        
-        </Routes>
-      </BrowserRouter>
-      
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AdminDashboard } from "./pages/AdminDashboard/AdminDashboard";
+import { AgentDashboard } from "./pages/AgentDashboard/AgentDashboard";
+import { LoginPage } from "./pages/LoginPage/LoginPage";
+import { SignUpPage } from "./pages/SignUpPage/SignUpPage";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
-    </div>
-      
-    </>
-  )
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+
+        {/* Protected Routes */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/agent"
+          element={
+            <ProtectedRoute requiredRole="agent">
+              <AgentDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Default route */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
