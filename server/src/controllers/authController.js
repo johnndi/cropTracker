@@ -27,12 +27,6 @@ export const changePasswordRules = [
     .withMessage("New password must be at least 6 characters."),
 ];
 
-/**
- * POST /api/auth/login
- * Authenticates the user and sets an httpOnly cookie containing the JWT.
- * The JWT payload includes name and role so the client can decode it
- * without an extra round-trip.
- */
 export async function login(req, res, next) {
   try {
     const { user, token } = await authService.login(req.body);
@@ -41,7 +35,7 @@ export async function login(req, res, next) {
 
     res.json({
       user,
-      // Expose name + role explicitly so clients don't need to decode the JWT
+    
       session: { name: user.name, role: user.role },
     });
   } catch (err) {
@@ -49,10 +43,7 @@ export async function login(req, res, next) {
   }
 }
 
-/**
- * POST /api/auth/logout
- * Clears the session cookie.
- */
+
 export function logout(req, res) {
   res.clearCookie(COOKIE_NAME, {
     httpOnly: COOKIE_OPTIONS.httpOnly,
@@ -61,12 +52,6 @@ export function logout(req, res) {
   });
   res.json({ message: "Logged out successfully." });
 }
-
-/**
- * POST /api/auth/register  (admin only)
- * Creates a new user and returns their record.
- * Does NOT set a cookie — the new user must log in separately.
- */
 export async function register(req, res, next) {
   try {
     const { user } = await authService.register(req.body);
@@ -76,11 +61,6 @@ export async function register(req, res, next) {
   }
 }
 
-/**
- * GET /api/auth/me
- * Returns the currently authenticated user from req.user (set by authenticate middleware).
- * Also returns the name + role from the cookie payload for convenience.
- */
 export async function me(req, res) {
   res.json({
     user: req.user,
@@ -88,9 +68,7 @@ export async function me(req, res) {
   });
 }
 
-/**
- * PUT /api/auth/me/password
- */
+
 export async function changePassword(req, res, next) {
   try {
     const result = await authService.changePassword({

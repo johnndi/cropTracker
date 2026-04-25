@@ -4,23 +4,18 @@ import prisma from "../models/prismaClient.js";
 
 const SALT_ROUNDS = 12;
 
-// Cookie name used across auth middleware and controllers
+
 export const COOKIE_NAME = "farmops_session";
 
-// Cookie options — httpOnly prevents JS access, sameSite blocks CSRF
+
 export const COOKIE_OPTIONS = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production", // HTTPS only in prod
+  secure: process.env.NODE_ENV === "production", 
   sameSite: "lax",
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
+  maxAge: 7 * 24 * 60 * 60 * 1000, 
 };
 
-/**
- * Generate a signed JWT.
- * Payload carries: sub (user id for DB lookups), name, role.
- * name + role are included so the frontend can read them directly from the
- * cookie after decoding — no extra /me request needed.
- */
+
 export function generateToken(user) {
   return jwt.sign(
     {

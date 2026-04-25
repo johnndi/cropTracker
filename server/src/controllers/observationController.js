@@ -51,7 +51,7 @@ export async function addObservation(req, res, next) {
   }
 }
 
-// Admin: paginated activity feed across all fields
+
 export async function listAllObservations(req, res, next) {
   try {
     const page  = Number(req.query.page)  || 1;

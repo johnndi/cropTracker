@@ -2,14 +2,7 @@ import jwt from "jsonwebtoken";
 import prisma from "../models/prismaClient.js";
 import { COOKIE_NAME } from "../services/authService.js";
 
-/**
- * Reads the JWT from the httpOnly cookie (farmops_session).
- * Verifies it, then fetches a fresh user record from the DB
- * and attaches it to req.user.
- *
- * Cookie payload contains: sub (id), name, role.
- * We re-fetch from DB so revoked/deleted users are caught immediately.
- */
+
 export async function authenticate(req, res, next) {
   try {
     const token = req.cookies?.[COOKIE_NAME];
@@ -27,7 +20,7 @@ export async function authenticate(req, res, next) {
       return res.status(401).json({ error: message });
     }
 
-    // Fetch fresh record — catches deleted users or role changes since token was issued
+
     const user = await prisma.user.findUnique({
       where: { id: payload.sub },
       select: { id: true, email: true, name: true, role: true },
@@ -46,9 +39,7 @@ export async function authenticate(req, res, next) {
   }
 }
 
-/**
- * RBAC guard. Usage: authorize("ADMIN") or authorize("ADMIN", "AGENT")
- */
+
 export function authorize(...roles) {
   return (req, res, next) => {
     if (!req.user) {

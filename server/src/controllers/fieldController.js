@@ -22,7 +22,7 @@ export const updateFieldRules = [
 
 export async function listFields(req, res, next) {
   try {
-    // Agents can only see their own fields; admins can filter by agentId
+  
     const agentId =
       req.user.role === "AGENT" ? req.user.id : req.query.agentId;
     const { stage } = req.query;
