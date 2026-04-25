@@ -18,7 +18,7 @@ function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute requiredRole="admin">
+            <ProtectedRoute requiredRole="ADMIN">
               <AdminDashboard />
             </ProtectedRoute>
           }
@@ -26,7 +26,7 @@ function App() {
         <Route
           path="/agent"
           element={
-            <ProtectedRoute requiredRole="agent">
+            <ProtectedRoute requiredRole="AGENT">
               <AgentDashboard />
             </ProtectedRoute>
           }

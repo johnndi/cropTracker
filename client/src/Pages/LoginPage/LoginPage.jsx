@@ -6,24 +6,47 @@ export const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuthStore();
+  const { setUser } = useAuthStore();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     try {
-      login(email, password);
-      const user = useAuthStore.getState().user;
-      // Redirect based on role
-      if (user.role === "admin") {
+      const res = await fetch("http://localhost:4000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        // Backend returns { error: "..." } not { message: "..." }
+        throw new Error(data.error || "Login failed");
+      }
+
+      // Store user in zustand — do this before navigating
+      setUser({
+        id:   data.user.id,
+        name: data.user.name,
+        role: data.user.role,
+      });
+
+      // Navigate based on role
+      if (data.user.role === "ADMIN") {
         navigate("/admin");
-      } else if (user.role === "agent") {
+      } else if (data.user.role === "AGENT") {
         navigate("/agent");
       }
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -38,9 +61,7 @@ export const LoginPage = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Email
-            </label>
+            <label className="block text-gray-700 font-medium mb-2">Email</label>
             <input
               type="email"
               value={email}
@@ -52,9 +73,7 @@ export const LoginPage = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Password
-            </label>
+            <label className="block text-gray-700 font-medium mb-2">Password</label>
             <input
               type="password"
               value={password}
@@ -73,34 +92,26 @@ export const LoginPage = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white font-bold py-2 rounded-lg hover:bg-blue-600 transition"
+            disabled={loading}
+            className="w-full bg-blue-500 text-white font-bold py-2 rounded-lg hover:bg-blue-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Sign In
+            {loading ? "Signing in…" : "Sign In"}
           </button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-gray-600">
             Don't have an account?{" "}
-            <a
-              href="/signup"
-              className="text-blue-500 hover:text-blue-600 font-medium"
-            >
+            <a href="/signup" className="text-blue-500 hover:text-blue-600 font-medium">
               Sign up
             </a>
           </p>
         </div>
 
         <div className="mt-8 pt-6 border-t border-gray-200">
-          <p className="text-sm text-gray-600 text-center font-medium mb-3">
-            Demo Credentials
-          </p>
           <div className="space-y-2 text-xs text-gray-600">
             <p>
-              <strong>Admin:</strong> admin@example.com / admin123
-            </p>
-            <p>
-              <strong>Agent:</strong> john@example.com / john123
+              <strong>copyright (c) 2026 john ndirangu. All rights reserved.</strong>
             </p>
           </div>
         </div>

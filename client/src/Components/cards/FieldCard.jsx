@@ -1,6 +1,6 @@
 import { StatusBadge } from "../common/StatusBadge";
 
-export const FieldCard = ({ field, onUpdate, onView, onRemove, userRole = "admin", onUpdateStage, onAddObservation }) => {
+export const FieldCard = ({ field, onUpdate, onView, onRemove, userRole = "ADMIN", onUpdateStage, onAddObservation }) => {
   const cropEmojis = {
     wheat: "🌾",
     corn: "🌽",
@@ -15,7 +15,7 @@ export const FieldCard = ({ field, onUpdate, onView, onRemove, userRole = "admin
     (Date.now() - new Date(field.plantingDate)) / (1000 * 60 * 60 * 24)
   );
 
-  const isAgent = userRole === "agent";
+  const isAgent = userRole === "AGENT";
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
