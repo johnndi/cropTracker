@@ -7,6 +7,12 @@ import { toast } from "react-toastify";
 
 const API = "http://localhost:4000";
 
+
+const normaliseField = (f) => ({
+  ...f,
+  agent: f.agent?.name ?? f.agent,
+});
+
 export const AgentDashboard = () => {
   const [fields, setFields] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +38,7 @@ export const AgentDashboard = () => {
         }
 
         
-        setFields(data.fields);
+        setFields(data.fields.map(normaliseField));
       } catch (err) {
         setError(err.message);
         toast.error("Failed to load fields. Please try again.", { autoClose: 2000 });
@@ -54,7 +60,6 @@ export const AgentDashboard = () => {
     toast.success("Logged out successfully!");
   };
 
-
   const handleUpdateStage = async (fieldId, newStage) => {
     try {
       const res = await fetch(`${API}/api/fields/${fieldId}/observations`, {
@@ -67,21 +72,19 @@ export const AgentDashboard = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(data.error || "Failed to update stage");
         throw new Error(data.error || "Failed to update stage");
       }
-      toast.success("Stage updated!");
 
-      
+     
       setFields((prev) =>
-        prev.map((f) => (f.id === fieldId ? { ...f, ...data.field } : f))
+        prev.map((f) => (f.id === fieldId ? normaliseField(data.field) : f))
       );
+      toast.success("Stage updated!");
     } catch (err) {
       toast.error(err.message);
     }
   };
 
-  
   const handleAddObservation = async (fieldId, notes) => {
     try {
       const res = await fetch(`${API}/api/fields/${fieldId}/observations`, {
@@ -94,11 +97,9 @@ export const AgentDashboard = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(data.error || "Failed to add observation");
         throw new Error(data.error || "Failed to add observation");
       }
 
-      
       setFields((prev) =>
         prev.map((f) =>
           f.id === fieldId
@@ -121,7 +122,7 @@ export const AgentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-white p-6">
-   
+
       <div className="mb-8 flex justify-between items-start">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-1">
@@ -139,7 +140,6 @@ export const AgentDashboard = () => {
         </button>
       </div>
 
-     
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <SummaryWidget title="Total Assigned" count={stats.total}     icon="🌾" color="blue"   />
         <SummaryWidget title="Active"          count={stats.active}    icon="📋" color="green"  />
@@ -147,13 +147,10 @@ export const AgentDashboard = () => {
         <SummaryWidget title="Harvest Ready"   count={stats.completed} icon="✅" color="blue"   />
       </div>
 
-   
       <div className="mb-8">
         <h2 className="text-xl font-bold text-gray-900 mb-4">My Fields</h2>
 
-        {loading && (
-          <p className="text-gray-500">Loading fields…</p>
-        )}
+        {loading && <p className="text-gray-500">Loading fields…</p>}
 
         {error && (
           <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded">
