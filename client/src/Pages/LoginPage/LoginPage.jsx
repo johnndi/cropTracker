@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
+import { toast } from "react-toastify";
 
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -15,6 +16,7 @@ export const LoginPage = () => {
     setError("");
     setLoading(true);
 
+
     try {
       const res = await fetch("http://localhost:4000/api/auth/login", {
         method: "POST",
@@ -26,18 +28,19 @@ export const LoginPage = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        // Backend returns { error: "..." } not { message: "..." }
+        toast.error(data.error || "Login failed", { autoClose: 2000 });
         throw new Error(data.error || "Login failed");
       }
 
-      // Store user in zustand — do this before navigating
+     
       setUser({
         id:   data.user.id,
         name: data.user.name,
         role: data.user.role,
       });
+      toast.success(`Welcome back, ${data.user.name}!`, { autoClose: 2000 });
 
-      // Navigate based on role
+      
       if (data.user.role === "ADMIN") {
         navigate("/admin");
       } else if (data.user.role === "AGENT") {
@@ -45,6 +48,7 @@ export const LoginPage = () => {
       }
     } catch (err) {
       setError(err.message);
+      toast.error("Login failed. Please try again.", { autoClose: 2000 });
     } finally {
       setLoading(false);
     }

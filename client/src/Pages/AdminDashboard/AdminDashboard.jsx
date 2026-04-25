@@ -4,6 +4,8 @@ import { SummaryWidget } from "../../Components/common/SummaryWidget";
 import { KanbanBoard } from "../../Components/cards/KanbanBoard";
 import { Modal } from "../../Components/common/Modal";
 import { useAuthStore } from "../../store/authStore";
+import { toast } from "react-toastify";
+
 
 const API = "http://localhost:4000";
 
@@ -23,7 +25,7 @@ export const AdminDashboard = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
 
-  // ── Fetch all fields on mount ─────────────────────────────────────────────
+  
   useEffect(() => {
     fetchFields();
     fetchAgents();
@@ -36,7 +38,7 @@ export const AdminDashboard = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to fetch fields");
 
-      // Normalise agent object → name string for components that expect a string
+   
       const normalised = data.fields.map((f) => ({
         ...f,
         agent: f.agent?.name ?? f.agent,
@@ -57,6 +59,7 @@ export const AdminDashboard = () => {
       setAgents(data.users);
     } catch (err) {
       console.error(err.message);
+      toast.error("Failed to fetch agents");
     }
   };
 
@@ -64,6 +67,7 @@ export const AdminDashboard = () => {
     await fetch(`${API}/api/auth/logout`, { method: "POST", credentials: "include" });
     logout();
     navigate("/login");
+    toast.success("Logged out successfully!");
   };
 
   const stats = {
@@ -73,7 +77,7 @@ export const AdminDashboard = () => {
     completed: fields.filter((f) => f.status === "Completed").length,
   };
 
-  // ── Add Field ─────────────────────────────────────────────────────────────
+  
   const handleAddField = async (e) => {
     e.preventDefault();
     setFormError("");
@@ -83,7 +87,7 @@ export const AdminDashboard = () => {
       name:         formData.get("name"),
       cropType:     formData.get("cropType"),
       plantingDate: formData.get("plantingDate"),
-      agentName:    formData.get("agentName"), // backend resolves name → id
+      agentName:    formData.get("agentName"), 
     };
 
     try {
@@ -96,19 +100,20 @@ export const AdminDashboard = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to create field");
 
-      // Add new field to state (flatten agent object)
+    
       setFields((prev) => [
         ...prev,
         { ...data.field, agent: data.field.agent?.name ?? data.field.agent },
       ]);
+      toast.success("Field added successfully!");
       setShowAddFieldModal(false);
       e.target.reset();
     } catch (err) {
       setFormError(err.message);
+      toast.error(err.message);
     }
   };
 
-  // ── Remove Field ──────────────────────────────────────────────────────────
   const handleRemoveField = async (fieldId) => {
     if (!confirm("Are you sure you want to remove this field?")) return;
     try {
@@ -121,12 +126,13 @@ export const AdminDashboard = () => {
         throw new Error(data.error || "Failed to delete field");
       }
       setFields((prev) => prev.filter((f) => f.id !== fieldId));
+      toast.success("Field removed successfully!");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 
-  // ── Reassign Agent ────────────────────────────────────────────────────────
+  
   const handleAssignAgent = async (e) => {
     e.preventDefault();
     setFormError("");
@@ -148,15 +154,17 @@ export const AdminDashboard = () => {
             ? { ...f, agent: data.field.agent?.name ?? data.field.agent }
             : f
         )
+        
       );
+      toast.success("Agent reassigned successfully!");
+      
       setShowAgentModal(false);
       setSelectedFieldId(null);
     } catch (err) {
-      setFormError(err.message);
+      toast.error(err.message);
     }
   };
 
-  // ── View Field (with observations) ────────────────────────────────────────
   const handleViewField = async (fieldId) => {
     try {
       const res  = await fetch(`${API}/api/fields/${fieldId}`, { credentials: "include" });
@@ -165,11 +173,11 @@ export const AdminDashboard = () => {
       setViewField(data.field);
       setShowViewModal(true);
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 
-  // ── Add Agent ─────────────────────────────────────────────────────────────
+
   const handleAddAgent = async (e) => {
     e.preventDefault();
     setFormError("");
@@ -190,17 +198,19 @@ export const AdminDashboard = () => {
         body: JSON.stringify(payload),
       });
       const data = await res.json();
+    
       if (!res.ok) throw new Error(data.error || "Failed to create agent");
 
       setAgents((prev) => [...prev, data.user]);
+      toast.success("Agent added successfully!");
       setShowAddAgentModal(false);
       e.target.reset();
     } catch (err) {
-      setFormError(err.message);
+      toast.error(err.message);
     }
   };
 
-  // ── Add Admin ─────────────────────────────────────────────────────────────
+
   const handleAddAdmin = async (e) => {
     e.preventDefault();
     setFormError("");
@@ -223,17 +233,17 @@ export const AdminDashboard = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to create admin");
 
-      alert(`Admin "${data.user.name}" added successfully.`);
+      toast.success(`Admin "${data.user.name}" added successfully.`);
       setShowAddAdminModal(false);
       e.target.reset();
     } catch (err) {
-      setFormError(err.message);
+      toast.error(err.message);
     }
   };
 
   const selectedField = fields.find((f) => f.id === selectedFieldId);
 
-  // ── Recent activity: fields sorted by most recent observation/update ──────
+  
   const recentFields = [...fields]
     .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
     .slice(0, 5);
@@ -241,7 +251,7 @@ export const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-white p-6">
 
-      {/* Header */}
+      
       <div className="mb-8 flex justify-between items-start">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
@@ -267,7 +277,7 @@ export const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Summary Widgets */}
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <SummaryWidget title="Total Fields" count={stats.total}     icon="🌾" color="blue"   />
         <SummaryWidget title="Active"        count={stats.active}    icon="📋" color="green"  />
@@ -275,7 +285,7 @@ export const AdminDashboard = () => {
         <SummaryWidget title="Completed"     count={stats.completed} icon="✅" color="blue"   />
       </div>
 
-      {/* Kanban Board */}
+    
       <div className="mb-8">
         <h2 className="text-xl font-bold text-gray-900 mb-4">Field Status Board</h2>
         {loading ? (
@@ -291,7 +301,7 @@ export const AdminDashboard = () => {
         )}
       </div>
 
-      {/* Recent Activity */}
+    
       <div className="mb-8">
         <h2 className="text-xl font-bold text-gray-900 mb-4">Recent Activity</h2>
         {recentFields.length === 0 ? (
@@ -326,7 +336,7 @@ export const AdminDashboard = () => {
         )}
       </div>
 
-      {/* ── Add Field Modal ── */}
+      
       <Modal isOpen={showAddFieldModal} title="Add New Field"
         onClose={() => setShowAddFieldModal(false)}>
         <form onSubmit={handleAddField} className="space-y-4">
@@ -374,7 +384,7 @@ export const AdminDashboard = () => {
         </form>
       </Modal>
 
-      {/* ── Reassign Agent Modal ── */}
+     
       <Modal isOpen={showAgentModal} title={`Reassign Agent — ${selectedField?.name}`}
         onClose={() => { setShowAgentModal(false); setSelectedFieldId(null); }}>
         <form onSubmit={handleAssignAgent} className="space-y-4">
@@ -405,7 +415,7 @@ export const AdminDashboard = () => {
         </form>
       </Modal>
 
-      {/* ── View Field Modal ── */}
+    
       <Modal isOpen={showViewModal} title={`Field Details — ${viewField?.name}`}
         onClose={() => { setShowViewModal(false); setViewField(null); }}>
         {viewField && (
@@ -433,7 +443,7 @@ export const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Observations */}
+           
             <div>
               <h3 className="font-semibold text-gray-800 mb-2">
                 Observations ({viewField.observations?.length ?? 0})
@@ -462,7 +472,7 @@ export const AdminDashboard = () => {
         )}
       </Modal>
 
-      {/* ── Add Agent Modal ── */}
+   
       <Modal isOpen={showAddAgentModal} title="Add New Agent"
         onClose={() => setShowAddAgentModal(false)}>
         <form onSubmit={handleAddAgent} className="space-y-4">
@@ -495,7 +505,6 @@ export const AdminDashboard = () => {
         </form>
       </Modal>
 
-      {/* ── Add Admin Modal ── */}
       <Modal isOpen={showAddAdminModal} title="Add New Admin"
         onClose={() => setShowAddAdminModal(false)}>
         <form onSubmit={handleAddAdmin} className="space-y-4">

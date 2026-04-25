@@ -3,6 +3,7 @@ import { SummaryWidget } from "../../Components/common/SummaryWidget";
 import { FieldCard } from "../../Components/cards/FieldCard";
 import { useAuthStore } from "../../store/authStore";
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 const API = "http://localhost:4000";
 
@@ -30,17 +31,11 @@ export const AgentDashboard = () => {
           throw new Error(data.error || "Failed to fetch fields");
         }
 
-        // Response shape: { agent, count, fields: [...] }
-        // Flatten field.agent from { id, name, email } to just the name string
-        // so FieldCard (which expects a string) does not throw
-        const normalised = data.fields.map((f) => ({
-          ...f,
-          agent: f.agent?.name ?? f.agent,
-        }));
-
-        setFields(normalised);
+        
+        setFields(data.fields);
       } catch (err) {
         setError(err.message);
+        toast.error("Failed to load fields. Please try again.", { autoClose: 2000 });
       } finally {
         setLoading(false);
       }
@@ -56,7 +51,9 @@ export const AgentDashboard = () => {
     });
     logout();
     navigate("/login");
+    toast.success("Logged out successfully!");
   };
+
 
   const handleUpdateStage = async (fieldId, newStage) => {
     try {
@@ -70,24 +67,21 @@ export const AgentDashboard = () => {
       const data = await res.json();
 
       if (!res.ok) {
+        toast.error(data.error || "Failed to update stage");
         throw new Error(data.error || "Failed to update stage");
       }
+      toast.success("Stage updated!");
 
-      // Response shape: { observation, field }
-      // Flatten agent on the returned field too before merging into state
-      const updatedField = {
-        ...data.field,
-        agent: data.field.agent?.name ?? data.field.agent,
-      };
-
+      
       setFields((prev) =>
-        prev.map((f) => (f.id === fieldId ? { ...f, ...updatedField } : f))
+        prev.map((f) => (f.id === fieldId ? { ...f, ...data.field } : f))
       );
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 
+  
   const handleAddObservation = async (fieldId, notes) => {
     try {
       const res = await fetch(`${API}/api/fields/${fieldId}/observations`, {
@@ -100,10 +94,11 @@ export const AgentDashboard = () => {
       const data = await res.json();
 
       if (!res.ok) {
+        toast.error(data.error || "Failed to add observation");
         throw new Error(data.error || "Failed to add observation");
       }
 
-      // Increment the observation count on the matching field
+      
       setFields((prev) =>
         prev.map((f) =>
           f.id === fieldId
@@ -111,8 +106,9 @@ export const AgentDashboard = () => {
             : f
         )
       );
+      toast.success("Observation added!");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -125,7 +121,7 @@ export const AgentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-white p-6">
-      {/* Header */}
+   
       <div className="mb-8 flex justify-between items-start">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-1">
@@ -143,7 +139,7 @@ export const AgentDashboard = () => {
         </button>
       </div>
 
-      {/* Summary Widgets */}
+     
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <SummaryWidget title="Total Assigned" count={stats.total}     icon="🌾" color="blue"   />
         <SummaryWidget title="Active"          count={stats.active}    icon="📋" color="green"  />
@@ -151,7 +147,7 @@ export const AgentDashboard = () => {
         <SummaryWidget title="Harvest Ready"   count={stats.completed} icon="✅" color="blue"   />
       </div>
 
-      {/* Fields */}
+   
       <div className="mb-8">
         <h2 className="text-xl font-bold text-gray-900 mb-4">My Fields</h2>
 
