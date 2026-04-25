@@ -2,20 +2,20 @@ import { FieldCard } from "./FieldCard";
 
 export const KanbanBoard = ({ fields, onUpdate, onView, onRemove, userRole = "admin" }) => {
   const groupedFields = {
-    Active: fields.filter((f) => f.status === "Active"),
+    Active:    fields.filter((f) => f.status === "Active"),
     "At Risk": fields.filter((f) => f.status === "At Risk"),
     Completed: fields.filter((f) => f.status === "Completed"),
   };
 
   const statusConfig = {
-    Active: { icon: "📋", color: "green", count: groupedFields.Active.length },
+    Active:    { icon: "📋", color: "green",  count: groupedFields.Active.length },
     "At Risk": { icon: "⚠️", color: "yellow", count: groupedFields["At Risk"].length },
-    Completed: { icon: "✅", color: "blue", count: groupedFields.Completed.length },
+    Completed: { icon: "✅", color: "blue",   count: groupedFields.Completed.length },
   };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {Object.entries(groupedFields).map(([status, fields]) => (
+      {Object.entries(groupedFields).map(([status, statusFields]) => (
         <div key={status} className="bg-gray-50 rounded-lg p-4">
           {/* Column Header */}
           <div className="mb-4 pb-3 border-b-2 border-gray-300">
@@ -28,10 +28,10 @@ export const KanbanBoard = ({ fields, onUpdate, onView, onRemove, userRole = "ad
             </div>
           </div>
 
-          {/* Cards Container */}
+          {/* Cards */}
           <div className="space-y-3 max-h-[600px] overflow-y-auto">
-            {fields.length > 0 ? (
-              fields.map((field) => (
+            {statusFields.length > 0 ? (
+              statusFields.map((field) => (
                 <FieldCard
                   key={field.id}
                   field={field}
