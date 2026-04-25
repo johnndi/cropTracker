@@ -1,10 +1,10 @@
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AdminDashboard } from "./pages/AdminDashboard/AdminDashboard";
-import { AgentDashboard } from "./pages/AgentDashboard/AgentDashboard";
-import { LoginPage } from "./pages/LoginPage/LoginPage";
-import { SignUpPage } from "./pages/SignUpPage/SignUpPage";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AdminDashboard } from "./pages/AdminDashboard/AdminDashboard.jsx";
+import { AgentDashboard } from "./pages/AgentDashboard/AgentDashboard.jsx";
+import { LoginPage } from "./pages/LoginPage/LoginPage.jsx";
+import { SignUpPage } from "./pages/SignUpPage/SignUpPage.jsx";
+import { ProtectedRoute } from "./components/ProtectedRoute.jsx";
 import { ToastContainer, Zoom } from "react-toastify";
 
 function App() {
