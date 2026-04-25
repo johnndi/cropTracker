@@ -7,7 +7,7 @@ export const addObservationRules = [
   body("notes").optional().isString(),
   body("stage")
     .optional()
-    .isIn(["PLANTED", "GROWING", "READY", "HARVESTED"])
+    .isIn(["PLANTED", "GROWING", "ATRISK", "READY", "HARVESTED"])
     .withMessage("Invalid crop stage."),
   body()
     .custom((_, { req }) => {
@@ -22,7 +22,7 @@ export async function listObservations(req, res, next) {
   try {
     const { fieldId } = req.params;
 
-    // Agents may only view observations for their own fields
+    
     if (req.user.role === "AGENT") {
       const field = await getFieldById(fieldId);
       if (field.agentId !== req.user.id) {

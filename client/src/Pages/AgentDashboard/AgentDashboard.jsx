@@ -5,7 +5,7 @@ import { useAuthStore } from "../../store/authStore";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
-const API = "http://localhost:4000";
+const API = import.meta.env.VITE_API_URL;
 
 
 const normaliseField = (f) => ({
@@ -116,7 +116,7 @@ export const AgentDashboard = () => {
   const stats = {
     total:     fields.length,
     active:    fields.filter((f) => f.status === "Active").length,
-    atRisk:    fields.filter((f) => f.status === "At Risk").length,
+    atRisk:    fields.filter((f) => f.status === "AT_RISK").length,
     completed: fields.filter((f) => f.status === "Completed").length,
   };
 

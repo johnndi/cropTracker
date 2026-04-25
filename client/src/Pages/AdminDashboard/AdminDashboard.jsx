@@ -7,7 +7,7 @@ import { useAuthStore } from "../../store/authStore";
 import { toast } from "react-toastify";
 
 
-const API = "http://localhost:4000";
+const API = import.meta.env.VITE_API_URL;
 
 export const AdminDashboard = () => {
   const [fields, setFields]                   = useState([]);
@@ -73,7 +73,7 @@ export const AdminDashboard = () => {
   const stats = {
     total:     fields.length,
     active:    fields.filter((f) => f.status === "Active").length,
-    atRisk:    fields.filter((f) => f.status === "At Risk").length,
+    atRisk:    fields.filter((f) => f.currentStage === "AT_RISK").length,
     completed: fields.filter((f) => f.status === "Completed").length,
   };
 

@@ -3,7 +3,7 @@ import { FieldCard } from "./FieldCard";
 export const KanbanBoard = ({ fields, onUpdate, onView, onRemove, userRole = "admin" }) => {
   const groupedFields = {
     Active:    fields.filter((f) => f.status === "Active"),
-    "At Risk": fields.filter((f) => f.status === "At Risk"),
+    "At Risk": fields.filter((f) => f.currentStage === "AT_RISK"),
     Completed: fields.filter((f) => f.status === "Completed"),
   };
 

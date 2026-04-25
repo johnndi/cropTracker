@@ -31,6 +31,7 @@ enum CropStage {
   GROWING
   READY
   HARVESTED
+  AT_RISK
 }
 
 model Field {

@@ -54,7 +54,7 @@ export const FieldCard = ({
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
 
-      {/* Header */}
+    
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-start gap-2">
           <span className="text-3xl">{emoji}</span>
@@ -113,7 +113,7 @@ export const FieldCard = ({
         </div>
       )}
 
-      {/* Agent actions */}
+      
       {isAgent && (
         <div className="mb-4 space-y-3 p-3 bg-blue-50 border border-blue-200 rounded">
 
@@ -131,6 +131,7 @@ export const FieldCard = ({
                 <option value="">Select new stage...</option>
                 <option value="PLANTED">Planted</option>
                 <option value="GROWING">Growing</option>
+                <option value="AT_RISK">At Risk</option>
                 <option value="READY">Ready</option>
                 <option value="HARVESTED">Harvested</option>
               </select>
@@ -144,7 +145,7 @@ export const FieldCard = ({
             </div>
           </div>
 
-          {/* Observation */}
+         
           <div>
             <label className="text-sm font-semibold text-gray-700 block mb-1">
               Add Observation

@@ -4,6 +4,7 @@ export function stageToStatus(stage) {
   const map = {
     PLANTED:   "Active",
     GROWING:   "Active",
+    ATRISK:    "At Risk",
     READY:     "Completed",
     HARVESTED: "Completed",
   };
@@ -41,12 +42,7 @@ export async function getFieldById(id) {
   return { ...field, status: stageToStatus(field.currentStage) };
 }
 
-/**
- * Look up an agent by name and return their id.
- * - Case-insensitive match.
- * - Throws 400 if no agent found with that name.
- * - Throws 409 if multiple agents share the same name (ambiguous).
- */
+
 async function resolveAgentByName(agentName) {
   const matches = await prisma.user.findMany({
     where: {
